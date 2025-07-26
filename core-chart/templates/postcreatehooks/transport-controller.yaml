@@ -71,10 +71,10 @@ spec:
               - /bin/bash
               - -c
               - |
-                kubectl wait --for=condition=Ready controlplane {{.ControlPlaneName}} --timeout=120s && \
-                key=$(kubectl get controlplane {{.ControlPlaneName}} -o=jsonpath='{.status.secretRef.inClusterKey}') && \
-                secret_name=$(kubectl get controlplane {{.ControlPlaneName}} -o=jsonpath='{.status.secretRef.name}') && \
-                secret_namespace=$(kubectl get controlplane {{.ControlPlaneName}} -o=jsonpath='{.status.secretRef.namespace}') && \
+                kubectl wait --for=condition=Ready controlplane {{ "{{.ControlPlaneName}}" }} --timeout=120s && \
+                key=$(kubectl get controlplane {{ "{{.ControlPlaneName}}" }} -o=jsonpath='{.status.secretRef.inClusterKey}') && \
+                secret_name=$(kubectl get controlplane {{ "{{.ControlPlaneName}}" }} -o=jsonpath='{.status.secretRef.name}') && \
+                secret_namespace=$(kubectl get controlplane {{ "{{.ControlPlaneName}}" }} -o=jsonpath='{.status.secretRef.namespace}') && \
                 until kubectl get secret $secret_name -n $secret_namespace -o=jsonpath="{.data.$key}" > /dev/null 2>&1; do echo "Waiting for secret $secret_name to be populated..."; sleep 5; done && \
                 kubectl get secret $secret_name -n $secret_namespace -o=jsonpath="{.data.$key}" | base64 -d > /mnt/shared/wds-kubeconfig
             volumeMounts:
@@ -87,7 +87,7 @@ spec:
               - /bin/bash
               - -c
               - |
-                ITS_CP_NAME="{{.ITSName}}"
+                ITS_CP_NAME="{{ "{{.ITSName}}" }}"
                 if [ "$ITS_CP_NAME" == "" ]; then
                   while true;
                     cps=$(kubectl get controlplane -l 'kflex.kubestellar.io/cptype=its' 2> /dev/null | tail -n +2)
