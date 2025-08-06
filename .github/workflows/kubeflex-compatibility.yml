@@ -37,6 +37,12 @@ jobs:
           bash <(curl -L https://raw.githubusercontent.com/open-cluster-management-io/clusteradm/main/install.sh)
           go install github.com/onsi/ginkgo/v2/ginkgo
 
+      - name: Install kflex
+        run: |
+          wget https://github.com/kubestellar/kubeflex/releases/download/v0.9.0/kubeflex_0.9.0_linux_amd64.tar.gz
+          tar -xvf kubeflex_0.9.0_linux_amd64.tar.gz bin/kflex
+          sudo mv bin/kflex /usr/local/bin
+
       - name: Setup KubeStellar
         run: |
           cd test/e2e/
