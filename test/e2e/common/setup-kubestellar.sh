@@ -166,10 +166,11 @@ function add_wec() {
         (existing)
             joinflags="";;
     esac
-    wait-for-cmd "(kubectl --context its1 get namespace open-cluster-management-hub)"
-    wait-for-cmd "(kubectl --context its1 wait --for=condition=Available -n open-cluster-management-hub deployment klusterlet-registration-agent --timeout=120s)"
-    wait-for-cmd "(kubectl --context its1 get serviceaccount agent-registration-bootstrap -n open-cluster-management)"
+    wait-for-cmd "(kubectl --context its1 get deployment cluster-manager -n open-cluster-management)"
+    wait-for-cmd "(kubectl --context its1 wait --for=condition=Available -n open-cluster-management deployment cluster-manager --timeout=120s)"
     clusteradm --context its1 get token | grep '^clusteradm join' | sed "s/<cluster_name>/${cluster}/" | awk '{print $0 " --context '${cluster}' --singleton '${joinflags}'"}' | sh
+    wait-for-cmd "(kubectl --context $cluster get deployment klusterlet -n open-cluster-management-agent)"
+    wait-for-cmd "(kubectl --context $cluster wait --for=condition=Available -n open-cluster-management-agent deployment klusterlet --timeout=120s)"
 }
 
 "${SRC_DIR}/../../../scripts/check_pre_req.sh" --assert --verbose ocm
