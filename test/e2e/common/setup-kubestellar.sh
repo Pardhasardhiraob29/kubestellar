@@ -166,7 +166,7 @@ function add_wec() {
         (existing)
             joinflags="";;
     esac
-    kubectl --context its1 wait --for=condition=Available serviceaccount/agent-registration-bootstrap -n open-cluster-management --timeout=120s
+    wait-for-cmd "(kubectl --context its1 get serviceaccount agent-registration-bootstrap -n open-cluster-management)"
     clusteradm --context its1 get token | grep '^clusteradm join' | sed "s/<cluster_name>/${cluster}/" | awk '{print $0 " --context '${cluster}' --singleton '${joinflags}'"}' | sh
 }
 
